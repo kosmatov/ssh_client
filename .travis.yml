@@ -1,0 +1,8 @@
+language: ruby
+env:
+  - SSHUSER=travis
+  - SSHPASS=travis
+rvm:
+  - 2.1.2
+  - 2.3.0
+before_install: gem install bundler

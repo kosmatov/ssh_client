@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "ssh_client"
+require "pry"
+
+SSHClient.configure do |conf|
+  conf.hostname = ENV['SSHHOST'] || 'localhost'
+  conf.username = ENV['SSHUSER']
+  conf.password = ENV['SSHPASS']
+end
+
+SSHClient.config.logger = Logger.new "tmp/log/development.log"
+
+def ssh
+  @ssh ||= SSHClient.connect
+end
+
+Pry.start
