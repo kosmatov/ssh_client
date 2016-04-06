@@ -1,6 +1,7 @@
 # SSHClient
 
 [![Build Status](https://travis-ci.org/kosmatov/ssh_client.svg?branch=master)](https://travis-ci.org/kosmatov/ssh_client)
+[![Coverage Status](https://coveralls.io/repos/github/kosmatov/ssh_client/badge.svg?branch=master)](https://coveralls.io/github/kosmatov/ssh_client?branch=master)
 
 Ruby SSH client uses Open3 and OpenSSH to interact with any remote shell
 
