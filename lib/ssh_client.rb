@@ -1,17 +1,17 @@
 require 'ssh_client/version'
 
 module SSHClient
-  autoload 'Config', 'ssh_client/config'
   autoload 'ConfigItem', 'ssh_client/config_item'
   autoload 'Connection', 'ssh_client/connection'
   autoload 'CommandBuilder', 'ssh_client/command_builder'
 
-  def self.configure(name = :default)
-    yield config.build(name)
+  def self.configure(name = nil)
+    yield config(name)
   end
 
-  def self.config
-    @config ||= Config.new
+  def self.config(name = nil)
+    @configurations ||= Hash.new
+    @configurations[name] ||= ConfigItem.new name
   end
 
   def self.connect(*args, &blk)

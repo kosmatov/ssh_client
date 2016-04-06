@@ -10,20 +10,28 @@ module SSHClient
     READ_TIMEOUT = 30
 
     attr_accessor :hostname, :username, :password
-    attr_reader :name, :listeners
+    attr_reader :name
     attr_writer :ssh_command, :read_block_size, :max_buffer_size, :read_timeout, :logger
 
-    def initialize(name = DEFAULT_NAME)
-      @name = name
-      @listeners = { logger: proc { |data| logger.info data } }
+    def initialize(name = nil)
+      @name = name || DEFAULT_NAME
+      @listeners = Hash.new
+      add_listener(:logger) { |data| logger.info data } if default?
+    end
+
+    def listeners
+      @cached_listeners ||=
+        default? ? @listeners : @listeners.merge(SSHClient.config.listeners)
     end
 
     def add_listener(name, &blk)
       @listeners[name] = blk
+      @cached_listeners = nil
     end
 
     def remove_listener(name)
       @listeners.delete name
+      @cached_listeners = nil
     end
 
     def host=(host)
@@ -57,7 +65,7 @@ module SSHClient
     end
 
     def logger
-      @logger || Logger.new(STDOUT)
+      @logger || (default? ? Logger.new(STDOUT) : SSHClient.config.logger)
     end
 
     def default?

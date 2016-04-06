@@ -5,9 +5,8 @@ module SSHClient
     attr_reader :config, :logger, :stdin, :stdout, :ctrl_thrd
 
     def initialize(config_name = nil, hostname: nil, username: nil, password: nil, &blk)
-      @config = SSHClient.config.configurations[config_name || hostname]
       build_config hostname, username, password if hostname
-      @config ||= SSHClient.config
+      @config ||= SSHClient.config(config_name)
 
       open
       batch_exec(&blk) if block_given?
@@ -16,7 +15,7 @@ module SSHClient
     end
 
     def build_config(hostname, username, password)
-      @config ||= SSHClient.config.build(hostname) do |conf|
+      @config ||= SSHClient.configure(hostname) do |conf|
         conf.hostname = hostname
         conf.username = username
         conf.password = password
