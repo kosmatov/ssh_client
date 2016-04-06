@@ -8,7 +8,7 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install sshpass
   - ps ax | grep ssh
-  - ls -la .ssh
+  - ls -la $HOME/.ssh
   - gem install bundler
 addons:
   ssh_known_hosts:
