@@ -7,5 +7,6 @@ rvm:
 before_install: 
   - sudo apt-get -qq update
   - sudo apt-get install sshpass
-  - cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+  - ps ax | grep ssh
+  - ls
   - gem install bundler
