@@ -30,7 +30,7 @@ SSHClient.configure do |conf|
   conf.username = 'sample'
   conf.password = 'sample'
   conf.logger = Logger.new('log/my.log') # default log to STDOUT
-  conf.read_timeout = 10 # default 30, see http://ruby-doc.org/core/IO.html#method-c-select
+  conf.read_timeout = 10 # default 30 
 end
 
 # Custom config
@@ -40,6 +40,8 @@ SSHClient.configure(:custom) do |conf|
   conf.password = 'custom'
 end
 ```
+
+See [IO.select](http://ruby-doc.org/core/IO.html#method-c-select) to understand `read_timeout` option
 
 ### Execute commands
 
