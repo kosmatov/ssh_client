@@ -1,6 +1,6 @@
 language: ruby
 env:
-  - SSHUSER=travis
+  - SSHUSER=travis SSHPASS=travis
 rvm:
   - 2.1.2
   - 2.3.0
