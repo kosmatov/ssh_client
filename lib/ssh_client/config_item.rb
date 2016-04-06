@@ -4,7 +4,7 @@ module SSHClient
   class ConfigItem
     DEFAULT_NAME = :default
     CMD = -> conf { "ssh #{conf.username}@#{conf.hostname}" }
-    CMD_PASSWD = -> conf { "sshpass -p#{conf.password} #{CMD.call(conf)} -t -t" }
+    CMD_PASSWD = -> conf { "sshpass -p#{conf.password} #{CMD.call(conf)}" }
     READ_BLOCK_SIZE = 4096
     MAX_BUFFER_SIZE = 65536
     READ_TIMEOUT = 30
