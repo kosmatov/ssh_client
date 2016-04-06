@@ -10,3 +10,6 @@ before_install:
   - ps ax | grep ssh
   - ls
   - gem install bundler
+addons:
+  ssh_known_hosts:
+    - localhost
