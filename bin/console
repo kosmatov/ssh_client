@@ -10,7 +10,7 @@ SSHClient.configure do |conf|
   conf.password = ENV['SSHPASS']
 end
 
-SSHClient.config.logger = Logger.new "tmp/log/development.log"
+SSHClient.config.logger = Logger.new "log/development.log"
 
 def ssh
   @ssh ||= SSHClient.connect

@@ -12,6 +12,6 @@ SSHClient.configure do |conf|
   conf.hostname = 'localhost'
   conf.username = ENV['SSHUSER']
   conf.password = ENV['SSHPASS']
-  conf.logger = Logger.new 'tmp/log/test.log'
+  conf.logger = Logger.new 'log/test.log'
   conf.read_timeout = 3
 end
