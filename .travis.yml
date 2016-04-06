@@ -1,14 +1,10 @@
 language: ruby
-env:
-  - SSHUSER=travis SSHPASS=travis
 rvm:
   - 2.1.2
   - 2.3.0
 before_install: 
   - ssh-keygen -f $HOME/.ssh/id_rsa -N ''
   - cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
-  - sudo apt-get -qq update
-  - sudo apt-get install sshpass
   - gem install bundler
 addons:
   ssh_known_hosts:
