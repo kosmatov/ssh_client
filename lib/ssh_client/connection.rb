@@ -61,10 +61,15 @@ module SSHClient
       config.listeners.each { |_, l| l.call data }
     end
 
+    def can_read?
+      @ready_support ||= stdout.respond_to?(:ready?)
+      @ready_support ? stdout.ready? : !stdout.closed?
+    end
+
     def read_loop
       loop do
         wait_stdout
-        if stdout.ready?
+        if can_read?
           handle_listeners stdout.read_nonblock(config.read_block_size)
         elsif Thread.current.thread_variable_get(:terminate)
           config.logger.debug 'Exit from read thread'
@@ -74,6 +79,8 @@ module SSHClient
     rescue [IO::WaitReadable, EOFError] => e
       config.logger.debug e.inspect
       retry
+    rescue => e
+      config.logger.debug e.inspect
     end
 
   end
