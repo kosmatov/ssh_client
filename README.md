@@ -1,6 +1,6 @@
 # SSHClient
 
-Ruby SSH client used Open3 and OpenSSH to interact with any remote shell
+Ruby SSH client uses Open3 and OpenSSH to interact with any remote shell
 
 ## Installation
 
@@ -20,6 +20,63 @@ Or install it yourself as:
 
 ## Usage
 
+### Configure client
+
+```ruby
+
+# Default config
+SSHClient.configure do |conf|
+  conf.hostname = 'example.com'
+  conf.username = 'sample'
+  conf.password = 'sample'
+  conf.logger = Logger.new('log/my.log') # default log to STDOUT
+  conf.read_timeout = 10 # default 30, see http://ruby-doc.org/core/IO.html#method-c-select
+end
+
+# Custom config
+SSHClient.configure(:custom) do |conf|
+  conf.hostname = 'custom.example.com'
+  conf.username = 'custom'
+  conf.password = 'custom'
+end
+```
+
+### Execute commands
+
+Using connection instance
+
+```ruby
+connection = SSHClient.connect
+
+connection.add_listener do |data|
+  puts data
+end
+
+connection.exec 'hostname'
+connection.close
+```
+
+Using connection with custom config
+
+```ruby
+connection = SSHClient.connect :custom
+```
+
+Pass hostname, username and password to connection
+
+```ruby
+connection = SSHClient.connect hostname: 'example.com', username: 'sample', password: 'sample'
+```
+
+Multiply commands run with block. Connection closed after block execution
+
+```ruby
+SSHClient.connect do
+  hostname
+  uname '-a'
+  run 'cat /proc/cpuinfo | grep model'
+end
+```
 
 ## Development
 
