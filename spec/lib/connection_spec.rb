@@ -37,6 +37,17 @@ RSpec.describe SSHClient::Connection do
       end
 
     end
+
+    context 'long run' do
+      subject do
+        connection.exec "tailf -1000 #{__FILE__}"
+        connection.close
+      end
+
+      it do
+        expect { subject }.to change { buffer['long run'] }.from nil
+      end
+    end
   end
 
   describe '#batch_exec' do
