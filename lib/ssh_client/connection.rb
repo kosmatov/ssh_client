@@ -31,6 +31,7 @@ module SSHClient
     end
 
     def exec(command, close_connection = false)
+      open if closed?
       config.logger.info ">> #{command}"
       stdin.puts command
       close if close_connection
@@ -67,6 +68,10 @@ module SSHClient
       stdout.close
 
       ctrl_thrd.exit
+    end
+
+    def closed?
+      stdin && stdin.closed?
     end
 
     private
