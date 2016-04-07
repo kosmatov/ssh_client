@@ -36,6 +36,7 @@ SSHClient.configure do |conf|
   conf.password = 'sample'
   conf.logger = Logger.new('log/my.log') # default log to STDOUT
   conf.read_timeout = 10 # default 30
+  conf.raise_on_errors = true # raise exception if command write to STDERR
 end
 
 # Custom config
