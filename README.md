@@ -40,7 +40,8 @@ end
 
 # Custom config
 SSHClient.configure(:custom) do |conf|
-  conf.ssh_command = proc { |config| "ssh 127.0.0.1 -i $HOME/.ssh/id_rsa" }
+  conf.hostname = '127.0.0.1'
+  conf.ssh_command = proc { |config| "ssh #{config.hostname} -i $HOME/.ssh/id_rsa" }
 end
 ```
 
