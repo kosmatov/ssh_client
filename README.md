@@ -23,6 +23,8 @@ Or install it yourself as:
 
 ## Usage
 
+Note that gem uses `sshpass` utility to open connection authenticated by password, `sshpass` can be present in u system, or set `config.ssh_command` other way.
+
 ### Configure client
 
 ```ruby
@@ -33,7 +35,8 @@ SSHClient.configure do |conf|
   conf.username = 'sample'
   conf.password = 'sample'
   conf.logger = Logger.new('log/my.log') # default log to STDOUT
-  conf.read_timeout = 10 # default 30 
+  conf.read_timeout = 10 # default 30
+  conf.ssh_command = proc { |config| "ssh #{config.hostname} -i $HOME/.ssh/id_rsa" }
 end
 
 # Custom config
@@ -44,7 +47,8 @@ SSHClient.configure(:custom) do |conf|
 end
 ```
 
-See [IO.select](http://ruby-doc.org/core/IO.html#method-c-select) to understand `read_timeout` option
+See [IO.select](http://ruby-doc.org/core/IO.html#method-c-select) to understand `read_timeout` option.
+See [ConfigItem](https://github.com/kosmatov/ssh_client/blob/master/lib/ssh_client/config_item.rb) to understand how `ssh_command` option work.
 
 ### Execute commands
 
