@@ -103,12 +103,13 @@ module SSHClient
       if can_read? io, io_type
         handle_listeners io, io_type, io.read_nonblock(config.read_block_size)
       end
-    rescue StandardError => e
-      config.logger.debug "#{io_type}: #{e.inspect}"
-      raise
     rescue IO::WaitReadable, EOFError => e
+      config.logger.debug "#{io_type}: #{e.inspect} retry"
       Thread.current.thread_variable_set(io_type, true)
       retry
+    rescue StandardError => e
+      config.logger.debug "#{io_type}: #{e.inspect} exit"
+      raise
     end
 
     def read_loop(io, io_type)
