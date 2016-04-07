@@ -63,8 +63,10 @@ module SSHClient
     end
 
     def can_read?
-      ready = stdout.respond_to?(:ready?) ? stdout.ready? : !stdout.closed?
-      ready && !stdout.eof?
+      return stdout.ready? && !stdout.eof? if stdout.respond_to?(:ready?)
+      ready = !@wait
+      @wait = false
+      ready
     end
 
     def read_loop
@@ -79,6 +81,7 @@ module SSHClient
       end
     rescue IO::WaitReadable => e
       config.logger.debug e.inspect
+      @wait = true
       retry
     rescue => e
       config.logger.debug e.inspect
