@@ -79,12 +79,10 @@ module SSHClient
           Thread.exit
         end
       end
-    rescue IO::WaitReadable => e
+    rescue => e
       config.logger.debug e.inspect
       @wait = true
       retry
-    rescue => e
-      config.logger.debug e.inspect
     end
 
   end
