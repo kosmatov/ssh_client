@@ -10,6 +10,5 @@ Coveralls.wear! { add_filter '/spec/' }
 
 SSHClient.configure do |conf|
   conf.ssh_command = proc { |_| "ssh localhost -i $HOME/.ssh/id_rsa" }
-  # conf.logger = Logger.new 'log/test.log'
   conf.read_timeout = 3
 end

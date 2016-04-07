@@ -31,6 +31,7 @@ module SSHClient
     end
 
     def exec(command)
+      config.logger.info ">> #{command}"
       stdin.puts command
     end
 

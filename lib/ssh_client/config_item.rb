@@ -3,8 +3,8 @@ require 'logger'
 module SSHClient
   class ConfigItem
     DEFAULT_NAME = :default
-    CMD = -> conf { "ssh #{conf.username}@#{conf.hostname}" }
-    CMD_PASSWD = -> conf { "sshpass -p#{conf.password} #{CMD.call(conf)}" }
+    CMD = proc { |data| "ssh #{conf.username}@#{conf.hostname}" }
+    CMD_PASSWD = proc { |data| "sshpass -p#{conf.password} #{CMD.call(conf)}" }
     READ_BLOCK_SIZE = 4096
     MAX_BUFFER_SIZE = 65536
     READ_TIMEOUT = 30
@@ -16,7 +16,7 @@ module SSHClient
     def initialize(name = nil)
       @name = name || DEFAULT_NAME
       @listeners = Hash.new
-      add_listener(:logger) { |data| logger.info data } if default?
+      add_listener(:logger) { |data| logger.info "<< #{data}" } if default?
     end
 
     def listeners
