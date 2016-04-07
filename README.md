@@ -36,14 +36,11 @@ SSHClient.configure do |conf|
   conf.password = 'sample'
   conf.logger = Logger.new('log/my.log') # default log to STDOUT
   conf.read_timeout = 10 # default 30
-  conf.ssh_command = proc { |config| "ssh #{config.hostname} -i $HOME/.ssh/id_rsa" }
 end
 
 # Custom config
 SSHClient.configure(:custom) do |conf|
-  conf.hostname = 'custom.example.com'
-  conf.username = 'custom'
-  conf.password = 'custom'
+  conf.ssh_command = proc { |config| "ssh 127.0.0.1 -i $HOME/.ssh/id_rsa" }
 end
 ```
 
