@@ -5,6 +5,8 @@ module SSHClient
   autoload 'Connection', 'ssh_client/connection'
   autoload 'CommandBuilder', 'ssh_client/command_builder'
 
+  CommandExitWithError = Class.new(StandardError)
+
   def self.configure(name = nil)
     yield config(name)
   end

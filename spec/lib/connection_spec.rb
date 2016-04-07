@@ -1,70 +1,49 @@
 require 'spec_helper'
 
 RSpec.describe SSHClient::Connection do
-  let(:connection) { described_class.new }
-  let(:buffer) { String.new }
-
   before do
-    SSHClient.config.add_listener(:test) { |data| buffer << data }
+    SSHClient.configure do |conf|
+      conf.ssh_command = proc { |_| "ssh localhost -i $HOME/.ssh/id_rsa" }
+      conf.read_timeout = 3
+    end
   end
 
-  after do
-    SSHClient.config.remove_listener :test
-  end
+  let(:connection) { described_class.new }
 
-  describe '#exec' do
-    subject do
-      connection.exec 'hostname'
-      connection.close
-    end
+  describe '#exec!' do
+    subject { connection.exec! 'hostname' }
 
-    it do
-      expect { subject }.to change { buffer[`hostname`.strip] }.from nil
-    end
+    it { is_expected.to include `hostname`.strip }
 
     context 'many commands' do
-      subject do
-        connection.exec "hostname\nuname -a"
-        connection.close
-      end
-
-      it 'hostname' do
-        expect { subject }.to change { buffer[`hostname`.strip] }.from nil
-      end
-
-      it 'uname -a' do
-        expect { subject }.to change { buffer[`uname -a`.strip] }.from nil
-      end
-
+      subject { connection.exec! "hostname\nuname -a" }
+      it { is_expected.to include `hostname`.strip }
+      it { is_expected.to include `uname -a`.strip }
     end
 
     context 'long run' do
-      subject do
-        connection.exec "tailf -1000 #{__FILE__}"
-        connection.close
-      end
+      subject { connection.exec! "tailf -1000 #{__FILE__}" }
+      it { is_expected.to include 'long run' }
+    end
 
+    context 'raise on error' do
+      before { SSHClient.config.raise_on_errors = true }
+      subject { connection.exec! "¯\\_(ツ)_/¯" }
       it do
-        expect { subject }.to change { buffer['long run'] }.from nil
-      end
-    end
-  end
-
-  describe '#batch_exec' do
-    subject do
-      connection.batch_exec do
-        hostname
-        uname '-a'
+        expect { subject }.to raise_error SSHClient::CommandExitWithError
       end
     end
 
-    it 'hostname' do
-      expect { subject }.to change { buffer[`hostname`.strip] }.from nil
-    end
+    context 'with block' do
+      subject do
+        connection.exec! do
+          hostname
+          uname '-a'
+        end
+      end
 
-    it 'uname -a' do
-      expect { subject }.to change { buffer[`uname -a`.strip] }.from nil
+      it { is_expected.to include `hostname`.strip }
+      it { is_expected.to include `uname -a`.strip }
     end
-
   end
 end
