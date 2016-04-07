@@ -49,7 +49,7 @@ module SSHClient
       stdin.close
 
       @read_thrd.thread_variable_set(:terminate, true)
-      loop { return stdout.close unless @read_thrd.status }
+      loop { return stdout.close unless @read_thrd.alive? }
     end
 
     private
