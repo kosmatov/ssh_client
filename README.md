@@ -56,11 +56,12 @@ Using connection instance
 ```ruby
 connection = SSHClient.connect
 
-connection.add_listener do |data|
+connection.add_listener(:my_listener, :stdout) do |data|
   puts data
 end
 
 connection.exec 'hostname'
+connection.remove_listener(:my_listener)
 connection.close
 ```
 
@@ -83,6 +84,16 @@ SSHClient.connect do
   hostname
   uname '-a'
   run 'cat /proc/cpuinfo | grep model'
+end
+```
+Run command and return output
+
+```ruby
+output = connection.exec! 'hostname'
+
+output = connection.exec! do
+  hostname
+  uname '-a'
 end
 ```
 
