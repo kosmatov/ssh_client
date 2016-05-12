@@ -6,11 +6,11 @@ module SSHClient
     CMD = proc { |conf| "ssh #{conf.username}@#{conf.hostname}" }
     CMD_PASSWD = proc { |conf| "sshpass -p#{conf.password} #{CMD.call(conf)}" }
     READ_BLOCK_SIZE = 4096
-    READ_TIMEOUT = 30
+    READ_TIMEOUT = 10
 
     attr_accessor :hostname, :username, :password
     attr_reader :name
-    attr_writer :ssh_command, :read_block_size, :max_buffer_size, :read_timeout, :logger
+    attr_writer :ssh_command, :read_block_size, :max_buffer_size, :read_timeout, :logger, :transport
 
     def initialize(name = nil)
       @name = name || DEFAULT_NAME
@@ -54,6 +54,10 @@ module SSHClient
       @read_timeout || (default? ? READ_TIMEOUT : SSHClient.config.read_timeout)
     end
 
+    def transport
+      (@transport || (default? ? Transport::NetSSH : SSHClient.config.transport)).new self
+    end
+
     def default_ssh_command(conf)
       conf.password ? CMD_PASSWD : CMD
     end
@@ -61,7 +65,7 @@ module SSHClient
     def raise_on_errors=(value)
       if value
         add_listener(:raise_on_errors, :stderr) do |data|
-          Thread.main.raise CommandExitWithError unless data.empty?
+          Thread.main.raise CommandExitWithError if data
         end
       else
         remove_listener(:raise_on_errors, :stderr)

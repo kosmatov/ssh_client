@@ -4,6 +4,7 @@ module SSHClient
   autoload 'ConfigItem', 'ssh_client/config_item'
   autoload 'Connection', 'ssh_client/connection'
   autoload 'CommandBuilder', 'ssh_client/command_builder'
+  autoload 'Transport', 'ssh_client/transport/net_ssh'
 
   CommandExitWithError = Class.new(StandardError)
 

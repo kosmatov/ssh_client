@@ -7,4 +7,3 @@ ENV['BUNDLED_GROUPS'] = 'test'
 
 require 'coveralls'
 Coveralls.wear! { add_filter '/spec/' }
-
