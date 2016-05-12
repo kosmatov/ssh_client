@@ -46,9 +46,6 @@ SSHClient.configure(:custom) do |conf|
 end
 ```
 
-See [IO.select](http://ruby-doc.org/core/IO.html#method-c-select) to understand `read_timeout` option.
-See [ConfigItem](https://github.com/kosmatov/ssh_client/blob/master/lib/ssh_client/config_item.rb) to understand how `ssh_command` option work.
-
 ### Execute commands
 
 Using connection instance
@@ -81,8 +78,8 @@ Multiply commands run with block. Connection closed after block execution
 
 ```ruby
 SSHClient.connect do
-  hostname
-  uname '-a'
+  run 'hostname'
+  run 'uname -a'
   run 'cat /proc/cpuinfo | grep model'
 end
 ```
@@ -92,8 +89,8 @@ Run command and return output
 output = connection.exec! 'hostname'
 
 output = connection.exec! do
-  hostname
-  uname '-a'
+  run 'hostname'
+  run 'uname -a'
 end
 ```
 
