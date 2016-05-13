@@ -9,6 +9,7 @@ SSHClient.configure do |conf|
   conf.username = ENV['SSHUSER']
   conf.password = ENV['SSHPASS']
   conf.read_timeout = 0.3
+  conf.debug = true
 end
 
 SSHClient.config.logger = Logger.new "log/development.log"

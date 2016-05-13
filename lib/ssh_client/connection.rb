@@ -41,7 +41,7 @@ module SSHClient
     end
 
     def batch_exec(&blk)
-      exec CommandBuilder.new(&blk).to_a.join("\n")
+      exec CommandBuilder.new(&blk).to_a.join("\n"), close: true
     end
 
   end
