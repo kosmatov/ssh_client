@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/kosmatov/ssh_client.svg?branch=master)](https://travis-ci.org/kosmatov/ssh_client)
 [![Coverage Status](https://coveralls.io/repos/github/kosmatov/ssh_client/badge.svg?branch=master)](https://coveralls.io/github/kosmatov/ssh_client?branch=master)
 
-Ruby SSH client uses Open3 and OpenSSH to interact with any remote shell
+Ruby SSH client for servers without `exec` requests support
 
 ## Installation
 
@@ -23,8 +23,6 @@ Or install it yourself as:
 
 ## Usage
 
-Note that gem uses `sshpass` utility to open connection authenticated by password, `sshpass` can be present in u system, or set `config.ssh_command` other way.
-
 ### Configure client
 
 ```ruby
@@ -35,14 +33,13 @@ SSHClient.configure do |conf|
   conf.username = 'sample'
   conf.password = 'sample'
   conf.logger = Logger.new('log/my.log') # default log to STDOUT
-  conf.read_timeout = 10 # default 30
+  conf.read_timeout = 0.5 # default 0.3
   conf.raise_on_errors = true # raise exception if command write to STDERR
 end
 
 # Custom config
 SSHClient.configure(:custom) do |conf|
   conf.hostname = '127.0.0.1'
-  conf.ssh_command = proc { |config| "ssh #{config.hostname} -i $HOME/.ssh/id_rsa" }
 end
 ```
 
@@ -53,12 +50,12 @@ Using connection instance
 ```ruby
 connection = SSHClient.connect
 
-connection.add_listener(:my_listener, :stdout) do |data|
+listener = connection.add_listener(:stdout) do |data|
   puts data
 end
 
 connection.exec 'hostname'
-connection.remove_listener(:my_listener)
+connection.remove_listener(listener)
 connection.close
 ```
 
@@ -83,6 +80,7 @@ SSHClient.connect do
   run 'cat /proc/cpuinfo | grep model'
 end
 ```
+
 Run command and return output
 
 ```ruby
