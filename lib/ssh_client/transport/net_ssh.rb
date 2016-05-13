@@ -43,7 +43,7 @@ module SSHClient
       end
 
       def close
-        @ssh.close
+        @ssh.close if !closed?
       end
     end
   end
