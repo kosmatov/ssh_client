@@ -3,7 +3,6 @@ require 'spec_helper'
 RSpec.describe SSHClient::Connection do
   before do
     SSHClient.config.logger = Logger.new('log/test.log')
-    SSHClient.config.read_timeout = 0.5
   end
 
   after do

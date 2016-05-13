@@ -34,14 +34,15 @@ module SSHClient
       config.remove_listener name, io_type
     end
 
-    def exec(command)
-      transport.send_message command
+    def exec(command, close: false)
+      config.logger.info ">> #{command}"
+      transport.send_message command, close: close
     end
 
     def exec!(command = nil, &blk)
       buffer = String.new
       add_listener(:buffer, :stdout) { |data| buffer << data }
-      block_given? ? batch_exec(&blk) : exec(command)
+      block_given? ? batch_exec(&blk) : exec(command, close: true)
       remove_listener(:buffer, :stdout)
       buffer
     end

@@ -6,15 +6,15 @@ module SSHClient
     class NetSSH < Base
       attr_reader :ssh
 
-      def send_message(command, wait: false)
+      def send_message(command, close: false)
         open if closed?
-        time = Time.now
+        last_read_time = nil
 
         ssh.open_channel do |channel|
           channel.send_channel_request 'shell' do |ch, success|
             channel.on_data do |c, data|
               handle_listeners :stdout, data
-              time = Time.now
+              last_read_time = Time.now
             end
 
             channel.on_extended_data do |c, data|
@@ -22,18 +22,20 @@ module SSHClient
             end
 
             channel.send_data "#{command}\n"
-            channel.eof!
           end
         end
 
         ssh.loop(0.1) do
-          ssh.busy? && Time.now - time < config.read_timeout
+          read_timeout = Time.now - last_read_time if last_read_time
+          ssh.busy? && (!read_timeout || read_timeout < config.read_timeout)
         end
+
+        ssh.close if close
       end
 
       def open
         @ssh = Net::SSH.start config.hostname, config.username,
-          password: config.password, logger: config.logger
+          password: config.password, logger: config.debug? && config.logger
       end
 
       def closed?
