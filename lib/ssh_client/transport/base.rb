@@ -8,7 +8,7 @@ module SSHClient
       end
 
       def handle_listeners(io_type, data)
-        config.listeners[io_type].each { |_, l| l.call data }
+        config.listeners[io_type].each { |l| l.call data }
       end
     end
   end

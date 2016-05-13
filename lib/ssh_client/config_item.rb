@@ -11,7 +11,7 @@ module SSHClient
 
     def initialize(name = nil)
       @name = name || DEFAULT_NAME
-      @listeners = { stdout: {}, stderr: {} }
+      @listeners = { stdout: Set.new, stderr: Set.new }
 
       add_listener(:logger) { |data| logger.info "<< #{data}" } if default?
     end
@@ -20,20 +20,20 @@ module SSHClient
       @cached_listeners ||= if default?
         @listeners
       else
-        @listeners.each { |k, l| l.merge SSHClient.config.listeners[k] }
+        @listeners.each { |k, l| l += SSHClient.config.listeners[k] }
       end
     end
 
     def add_listener(name, io_type = nil, &blk)
       Array(io_type || @listeners.keys).each do |k|
-        @listeners[k][name] = blk
+        @listeners[k] << blk
       end
       @cached_listeners = nil
     end
 
-    def remove_listener(name, io_type = nil)
+    def remove_listener(listener, io_type = nil)
       Array(io_type || @listeners.keys).each do |k|
-        @listeners[k].delete name
+        @listeners[k].delete listener
       end
       @cached_listeners = nil
     end

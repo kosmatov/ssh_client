@@ -4,12 +4,13 @@ module SSHClient
   class Connection
     extend Forwardable
     def_delegators :transport, :open, :close, :closed?
+    def_delegators :config, :add_listener, :remove_listener
 
     attr_reader :config, :transport
 
     def initialize(config_name = nil, hostname: nil, username: nil, password: nil, &blk)
       build_config hostname, username, password if hostname
-      @config ||= SSHClient.config(config_name)
+      @config ||= SSHClient.config config_name
       @transport = config.transport
 
       open
@@ -26,14 +27,6 @@ module SSHClient
       end
     end
 
-    def add_listener(name, io_type = nil, &blk)
-      config.add_listener(name, io_type, &blk)
-    end
-
-    def remove_listener(name, io_type = nil)
-      config.remove_listener name, io_type
-    end
-
     def exec(command, close: false)
       config.logger.info ">> #{command}"
       transport.send_message command, close: close
@@ -41,9 +34,9 @@ module SSHClient
 
     def exec!(command = nil, &blk)
       buffer = String.new
-      add_listener(:buffer, :stdout) { |data| buffer << data }
+      listener = add_listener(:stdout) { |data| buffer << data }
       block_given? ? batch_exec(&blk) : exec(command, close: true)
-      remove_listener(:buffer, :stdout)
+      remove_listener listener
       buffer
     end
 
