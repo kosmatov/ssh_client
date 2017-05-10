@@ -53,7 +53,7 @@ module SSHClient
     def raise_on_errors=(value)
       if value
         add_listener(:raise_on_errors, :stderr) do |data|
-          Thread.main.raise CommandExitWithError if data
+          Thread.main.raise CommandExitWithError.new(data) if data
         end
       else
         remove_listener(:raise_on_errors, :stderr)
