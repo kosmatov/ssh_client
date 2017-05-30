@@ -29,6 +29,7 @@ module SSHClient
         @listeners[k] << blk
       end
       @cached_listeners = nil
+      blk
     end
 
     def remove_listener(listener, io_type = nil)
