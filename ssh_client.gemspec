@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["key@kosmatov.ru"]
 
   spec.summary       = %q{Ruby SSH client}
-  spec.description   = %q{Ruby SSH client using Open3 and OpenSSH to interact with any remote shell}
+  spec.description   = %q{Ruby SSH client to interact with any remote shell}
   spec.homepage      = "https://github.com/kosmatov/ssh_client"
   spec.license       = "MIT"
 
