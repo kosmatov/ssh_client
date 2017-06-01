@@ -13,7 +13,7 @@ module SSHClient
       @name = name || DEFAULT_NAME
       @listeners = { stdout: Set.new, stderr: Set.new }
 
-      add_listener(:logger) { |data| logger.info "<< #{data}" } if default?
+      add_listener { |data| logger.info "<< #{data}" } if default?
     end
 
     def listeners
@@ -24,8 +24,8 @@ module SSHClient
       end
     end
 
-    def add_listener(name, io_type = nil, &blk)
-      Array(io_type || @listeners.keys).each do |k|
+    def add_listener(*args, &blk)
+      Array(args || @listeners.keys).each do |k|
         @listeners[k] << blk
       end
       @cached_listeners = nil
@@ -53,11 +53,11 @@ module SSHClient
 
     def raise_on_errors=(value)
       if value
-        add_listener(:raise_on_errors, :stderr) do |data|
+        @errors_listener = add_listener(:stderr) do |data|
           Thread.main.raise CommandExitWithError.new(data) if data
         end
       else
-        remove_listener(:raise_on_errors, :stderr)
+        remove_listener(@errors_listener, :stderr) if @errors_listener
       end
     end
 

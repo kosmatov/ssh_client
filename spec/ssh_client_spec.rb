@@ -14,13 +14,10 @@ describe SSHClient do
 
     context 'with block' do
       let(:buffer) { String.new }
-
-      before do
-        SSHClient.config.add_listener(:test) { |data| buffer << data }
-      end
+      let!(:listener) { SSHClient.config.add_listener(:stdout) { |data| buffer << data } }
 
       after do
-        SSHClient.config.remove_listener :test
+        SSHClient.config.remove_listener listener
       end
 
       subject do
