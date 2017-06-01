@@ -8,8 +8,8 @@ module SSHClient
 
     attr_reader :config, :transport
 
-    def initialize(config_name = nil, hostname: nil, username: nil, password: nil, &blk)
-      build_config hostname, username, password if hostname
+    def initialize(config_name = nil, hostname: nil, username: nil, password: nil, logger: nil, &blk)
+      build_config hostname, username, password, logger: logger if hostname
       @config ||= SSHClient.config config_name
       @transport = config.transport
 
@@ -19,11 +19,12 @@ module SSHClient
       ObjectSpace.define_finalizer(self) { transport.close }
     end
 
-    def build_config(hostname, username, password)
+    def build_config(hostname, username, password, logger: nil)
       @config ||= SSHClient.configure(hostname) do |conf|
         conf.hostname = hostname
         conf.username = username
         conf.password = password
+        conf.logger = logger
       end
     end
 
