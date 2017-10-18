@@ -17,7 +17,7 @@ module SSHClient
               last_read_time = Time.now
             end
 
-            channel.on_extended_data do |c, data|
+            channel.on_extended_data do |c, type, data|
               handle_listeners :stderr, data
             end
 
