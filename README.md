@@ -5,6 +5,8 @@
 
 Ruby SSH client for servers without `exec` requests support
 
+`Attention!!! This gem is research tool. Not recommended to use it in production environment.`
+
 ## Installation
 
 Add this line to your application's Gemfile:
