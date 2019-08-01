@@ -25,6 +25,8 @@ module SSHClient
         conf.username = username
         conf.password = password
         conf.logger = logger
+
+        conf
       end
     end
 
